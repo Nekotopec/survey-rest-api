@@ -1,0 +1,35 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="{% static 'quiz/style.css' %}">
+    <title>{{ quiz.name }}</title>
+</head>
+<body>
+
+
+<div id="outside">
+    <form action="{% url 'quiz-view' id=quiz.id %}" method="post">
+        {% csrf_token %}
+        <h1 id="title"> {{ quiz.name }} </h1>
+        <p id="description"><b>Description:</b> {{ quiz.description }}</p>
+
+        <!-- ------------------Text Questions---------------------------- -->
+        {% for question_form in form.questions_forms %}
+            <fieldset class="question">
+                {{ question_form }}
+            </fieldset>
+        {% endfor %}
+
+
+        <div id="submitbutton">
+            <button type="submit" id="submit">Done</button>
+             
+        </div>
+
+    </form>
+</div>
+</body>
+<!-- https://developer.mozilla.org/en-US/docs/Learn/HTML/Forms/Form_validation -->
+</html>

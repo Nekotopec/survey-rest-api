@@ -1,0 +1,27 @@
+{
+  "name": "Quiz 2",
+  "description": "Descr of quiz 2",
+  "questions": [
+    {
+      "text": "Question 1 ??",
+      "question_type": "text",
+      "answer_options": []
+    },
+    {
+      "text": "Question 2 ??",
+      "question_type": "chooce one",
+      "answer_options": [
+{"text": "answer option 1"},
+{"text": "answer option 2"},
+{"text": "answer option 3"}]
+    },
+    {
+      "text": "Question 3 ??",
+      "question_type": "chooce many",
+      "answer_options": [
+{"text": "answer option 1"},
+{"text": "answer option 2"},
+{"text": "answer option 3"}]
+    }
+  ]
+}

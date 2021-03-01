@@ -1,0 +1,32 @@
+{
+        "user": 10,
+        "quiz": "8890648f-951b-4497-956a-25dc935c384b",
+        "answers_to_questions": [
+            {
+                "id": 7,
+                "question": 1,
+                "text": "dsfsdfsdf",
+                "answer_response": 3,
+                "answer_options": []
+            },
+            {
+                "id": 8,
+                "question": 2,
+                "text": "",
+                "answer_response": 3,
+                "answer_options": [
+                    1
+                ]
+            },
+            {
+                "id": 9,
+                "question": 3,
+                "text": "",
+                "answer_response": 3,
+                "answer_options": [
+                    5,
+                    6
+                ]
+            }
+        ]
+    }
