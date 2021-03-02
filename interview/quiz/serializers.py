@@ -81,7 +81,7 @@ class AnswerResponseDetailSerializer(serializers.ModelSerializer):
         fields = ['user', 'quiz', 'answers_to_questions']
 
     def validate(self, attrs):
-        validated_data = super(AnswerResponseSerializer, self).validate(attrs)
+        validated_data = super().validate(attrs)
         validate_answer_response(attrs)
         return validated_data
 

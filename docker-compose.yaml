@@ -2,9 +2,39 @@ version: '3'
 
 services:
   backend:
-
+    build:
+      context: .
+      dockerfile: docker/backend/Dockerfile
+    command: gunicorn --bind 0.0.0.0:8000 interview.wsgi
+    ports:
+      - "8000:8000"
+    depends_on:
+      - memcached
+    restart: always
+    volumes:
+    - static_volume:/code/staticfiles
+    entrypoint: /entrypoint.sh
   memcached:
     image: memcached:1.6.7-alpine
     ports:
       - "11211:11211"
     restart: always
+  nginx:
+    build:
+      context: .
+      dockerfile: docker/nginx/Dockerfile
+    image: nginx:1.19.7-alpine
+    volumes:
+      - ./nginx/templates:/etc/nginx/templates
+      - static_volume:/staticfiles/static
+    ports:
+      - "8080:80"
+    environment:
+      - NGINX_HOST=localhost
+      - NGINX_PORT=80
+    depends_on:
+      - backend
+    restart: always
+
+volumes:
+  static_volume:

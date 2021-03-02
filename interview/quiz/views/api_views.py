@@ -20,7 +20,6 @@ class AnswerResponsesList(BaseView, ListAPIView):
 class MultiSerializerViewSet(ModelViewSet):
     serializers_classes = None
 
-
     def get_serializer_class(self):
         try:
             return self.serializers_classes[self.action]
@@ -42,9 +41,8 @@ class QuizViewSet(BaseView, MultiSerializerViewSet):
 
 
 class AnswerResponsesViewSet(BaseView, MultiSerializerViewSet):
-
     serializers_classes = {'default': AnswerResponseDetailSerializer,
-                        'list': AnswerResponseSerializer}
+                           'list': AnswerResponseSerializer}
     queryset = AnswerResponse.objects.all()
 
     def get_queryset(self):
@@ -53,3 +51,8 @@ class AnswerResponsesViewSet(BaseView, MultiSerializerViewSet):
             return super().get_queryset()
         else:
             return get_answer_responses_by_user_id(user_id)
+
+    def create(self, request, *args, **kwargs):
+
+        request.data['user'] = kwargs.get('user').id
+        return super().create(request, *args, **kwargs)

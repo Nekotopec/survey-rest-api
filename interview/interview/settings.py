@@ -24,7 +24,7 @@ SECRET_KEY = '9t4sm)md#tn2uo^=%+s-gx$1c*bq$dyl+$fu17dr4_8v%w#for'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['0.0.0.0', 'localhost']
 
 # Application definition
 
@@ -118,6 +118,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 # Session settings.
 
@@ -126,7 +127,7 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
-        'LOCATION': '127.0.0.1:11211',
+        'LOCATION': 'memcached:11211',
     }
 }
 REST_FRAMEWORK = {
@@ -138,4 +139,4 @@ REST_FRAMEWORK = {
 
 }
 
-BASE_URL = 'http://localhost:8000'
+BASE_URL = 'localhost:8080'

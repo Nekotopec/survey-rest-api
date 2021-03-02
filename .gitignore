@@ -9,6 +9,8 @@ interview/DB relations.png
 interview/db.sqlite3
 interview/op.yml
 survey_frontend/
+nginx/templates/nginx.conf
+interview/staticfiles/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
