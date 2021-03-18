@@ -1,13 +1,16 @@
 from rest_framework.generics import ListAPIView
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.generics import CreateAPIView, UpdateAPIView
-from rest_framework.permissions import IsAdminUser
-from quiz.models import AnswerResponse, Quiz
-from quiz.services.db import get_answer_responses_by_user_id
-from quiz.serializers import (AnswerResponseSerializer, QuizDetailSerializer,
-                              QuizSerializer, AnswerResponseDetailSerializer)
-from quiz.permissions import OnlySafeMethodsOrAdmin
 
+from quiz.models import AnswerResponse, Quiz
+from quiz.permissions import (
+    OnlySafeMethodsOrAdmin,
+    PatchOrDeleteIfOwnerOfAnswerOrAdmin
+)
+from quiz.serializers import (
+    AnswerResponseSerializer, QuizDetailSerializer,
+    QuizSerializer, AnswerResponseDetailSerializer
+)
+from quiz.services.db import get_answer_responses_by_user_id
 from .base_views import BaseView
 
 
@@ -32,11 +35,8 @@ class QuizViewSet(BaseView, MultiSerializerViewSet):
 
     queryset = Quiz.objects.all()
     serializers_classes = {
-        'update': QuizDetailSerializer,
-        'create': QuizDetailSerializer,
-        'retrieve': QuizDetailSerializer,
-        'default': QuizSerializer,
-
+        'default': QuizDetailSerializer,
+        'list': QuizSerializer
     }
 
 
@@ -45,14 +45,21 @@ class AnswerResponsesViewSet(BaseView, MultiSerializerViewSet):
                            'list': AnswerResponseSerializer}
     queryset = AnswerResponse.objects.all()
 
+    permission_classes = [PatchOrDeleteIfOwnerOfAnswerOrAdmin]
+
     def get_queryset(self):
         user_id = self.request.query_params.get('user_id')
         if user_id is None:
             return super().get_queryset()
+
         else:
             return get_answer_responses_by_user_id(user_id)
 
     def create(self, request, *args, **kwargs):
 
-        request.data['user'] = kwargs.get('user').id
+        request.data['user'] = self.get_user_id(kwargs)
         return super().create(request, *args, **kwargs)
+
+    @staticmethod
+    def get_user_id(kwargs):
+        return kwargs.get('user').id

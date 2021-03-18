@@ -2,6 +2,7 @@ FROM python:3.9.2-alpine
 
 ENV PYTHONUNBUFFERED 1
 RUN mkdir /code
+RUN mkdir /logs
 WORKDIR /code/
 COPY requirements.txt /code/
 RUN pwd

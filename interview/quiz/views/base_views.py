@@ -1,8 +1,25 @@
-from django.http import HttpResponse, HttpRequest
-from django.views import View
+from functools import wraps
 
 from django.contrib.sessions.models import Session
+from django.http import HttpRequest
+from django.views import View
+
 from users.services.db import get_anonymous_user_by_session, add_anonymous_user
+
+
+def handle_all_exceptions(func):
+    """Decorator that handles all exceptions."""
+
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        try:
+            response = func(*args, **kwargs)
+        except Exception as ex:
+            logging.exception("Exception occurred.")
+        finally:
+            return response
+
+    return wrapper
 
 
 class BaseView(View):

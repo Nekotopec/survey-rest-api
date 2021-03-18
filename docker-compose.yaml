@@ -5,7 +5,7 @@ services:
     build:
       context: .
       dockerfile: docker/backend/Dockerfile
-    command: gunicorn --bind 0.0.0.0:8000 interview.wsgi
+    command: gunicorn --bind 0.0.0.0:8000 interview.wsgi --log-level info
     ports:
       - "8000:8000"
     depends_on:
@@ -13,6 +13,7 @@ services:
     restart: always
     volumes:
     - static_volume:/code/staticfiles
+    - ./logs:/logs
     entrypoint: /entrypoint.sh
   memcached:
     image: memcached:1.6.7-alpine

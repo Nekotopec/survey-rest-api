@@ -7,11 +7,8 @@ from django.views.generic import ListView
 from quiz.forms import QuizForm
 from quiz.models import Quiz
 from quiz.services.db import get_quiz, get_questions_of_quiz
-from quiz.services.save_data import save_quiz_data
 from quiz.views.base_views import BaseView
 
-
-# Create your views here.
 
 class QuizListView(BaseView, ListView):
     model = Quiz
@@ -46,9 +43,3 @@ class QuizView(BaseView, View):
 
         # Set user cookie for anonymous user
         return render(request, template_name, context)
-
-    def post(self, request: HttpRequest, *args, **kwargs):
-        user = kwargs.pop('user')
-        save_quiz_data(user=user, raw_data=request.POST)
-
-        return HttpResponse('Got it')

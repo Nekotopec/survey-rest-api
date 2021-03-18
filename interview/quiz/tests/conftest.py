@@ -1,18 +1,12 @@
-import os
-import requests
 import pytest
-import json
-from quiz.serializers import QuizDetailSerializer
-from quiz.tests.quizzes_data import TEST_QUIZ_JSON, GOOD_ANSWER_RESPONSE_DATA
+
+from quiz import serializers
+from quiz.models import Quiz, AnswerResponse
+from quiz.tests.quizzes_data import (
+    get_test_quiz_data,
+    get_test_answer_response_data
+)
 from users.models import AnonymousUser
-
-
-def get_quiz_data() -> dict:
-    return json.loads(TEST_QUIZ_JSON)
-
-
-def get_answer_response_data():
-    return json.loads(GOOD_ANSWER_RESPONSE_DATA)
 
 
 @pytest.fixture(autouse=True)
@@ -22,11 +16,25 @@ def enable_db_access(db):
 
 def make_quiz():
     """Make new quiz with `quiz_data`."""
-    quiz_data = get_quiz_data()
-    quiz_s = QuizDetailSerializer(data=quiz_data)
+    quiz_data = get_test_quiz_data()
+    quiz_s = serializers.QuizDetailSerializer(data=quiz_data)
     quiz_s.is_valid()
     quiz = quiz_s.create(quiz_s.validated_data)
     return quiz
+
+
+def make_answer_response(user_id: int, quiz: Quiz) -> AnswerResponse:
+    answer_response_data = get_test_answer_response_data()
+    answer_response_data['quiz'] = quiz.id
+    answer_response_data['user'] = user_id
+    answer_response_serializer = serializers.AnswerResponseDetailSerializer(
+        data=answer_response_data
+    )
+    answer_response_serializer.is_valid()
+    answer_response = answer_response_serializer.create(
+        answer_response_serializer.validated_data
+    )
+    return answer_response
 
 
 @pytest.fixture(scope='function')
@@ -45,46 +53,18 @@ def create_question(db) -> int:
     quiz.delete()
 
 
-# @pytest.fixture(scope='class')
-# def create_user(django_db_blocker, client) -> int:
-#     with django_db_blocker.unblock():
-#         client.get('/api/quizzes/')
-#         user = AnonymousUser.objects.all()[0]
-#         yield user
-#
-#
-# @pytest.fixture(scope='class')
-# def create_user_answer_response(create_user, client):
-
-#
-# @pytest.fixture(scope='function')
-# def create_user_answer_response():
+@pytest.fixture(scope='function')
+def create_user(db, client) -> AnonymousUser:
+    client.get('/api/quizzes/')
+    user = AnonymousUser.objects.all()[0]
+    yield user
+    user.delete()
 
 
 @pytest.fixture(scope='function')
-def patch_request(monkeypatch):
-    class MockResponse:
-        def __init__(self, status_code):
-            self.status_code = status_code
-
-        @staticmethod
-        def iter_content(chunk_size):
-            image_path = os.path.join(
-                os.path.dirname(__file__),
-                'static/kitty.jpg',
-            )
-            with open(image_path, 'rb') as f:
-                while True:
-                    data = f.read(chunk_size)
-                    if not data:
-                        break
-                    yield data
-
-    def _wrap(status=200):
-
-        def mock_get(*args, **kwargs):
-            return MockResponse(status)
-
-        monkeypatch.setattr(requests, 'get', mock_get)
-
-    yield _wrap
+def create_user_answer_response(create_user, client, db, create_quiz):
+    user = create_user
+    quiz = create_quiz
+    answer_response = make_answer_response(user.id, quiz)
+    yield answer_response
+    answer_response.delete()

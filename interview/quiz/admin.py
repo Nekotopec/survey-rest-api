@@ -1,7 +1,8 @@
 from django.contrib import admin
+from nested_inline.admin import NestedStackedInline, NestedModelAdmin
+
 from .models import AnswerOption, Question, Quiz, AnswerToQuestion, \
     AnswerResponse
-from nested_inline.admin import NestedStackedInline, NestedModelAdmin
 
 
 # Register your models here.

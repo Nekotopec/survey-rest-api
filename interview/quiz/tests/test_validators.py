@@ -1,7 +1,10 @@
-import json
+from abc import ABC, abstractmethod
+
 import pytest
 from rest_framework.serializers import ValidationError
-from quiz.serializers import AnswerResponseDetailSerializer
+
+from quiz import models
+from quiz.tests import quizzes_data
 from quiz.validators import (
     Validator,
     AnswerOptionsValidator,
@@ -9,16 +12,13 @@ from quiz.validators import (
     QuestionTypesValidator
 )
 
-from quiz.tests import quizzes_data
-from quiz import models
-from abc import ABC, abstractmethod
+
+class NoValidatorException(Exception):
+    """There is no validator in TestValidator class."""
+    pass
 
 
-def get_good_data() -> dict:
-    return json.loads(quizzes_data.GOOD_ANSWER_RESPONSE_DATA)
-
-
-class BuildDataMixin:
+class BuildDataCore:
     """Mixin to building data for validators."""
 
     def build_data(self, data, quiz):
@@ -45,7 +45,7 @@ class BuildDataMixin:
         return answer_options
 
 
-class AbstractTestAnswerResponseValidator(ABC, BuildDataMixin):
+class AbstractTestAnswerResponseValidator(ABC, BuildDataCore):
     """Abstract class for making tests for validators."""
 
     # Validator for testing.
@@ -58,14 +58,14 @@ class AbstractTestAnswerResponseValidator(ABC, BuildDataMixin):
 
     def test_good_data(self, create_quiz):
         """Test good data validation."""
-        good_data = get_good_data()
+        good_data = quizzes_data.get_test_answer_response_data()
         data = self.build_data(good_data, create_quiz)
         self.validator().validate(data)
 
     def test_bad_data(self, create_quiz):
         """Test bad data validation."""
 
-        good_data = get_good_data()
+        good_data = quizzes_data.get_test_answer_response_data()
         bad_data = self.make_bad_data(good_data)
         self.check_bad_data(bad_data, create_quiz)
 
@@ -94,7 +94,7 @@ class TestAttachmentToQuizValidator(AbstractTestAnswerResponseValidator):
 
     def test_bad_data(self, create_quiz, create_question):
         question_id = create_question
-        good_data = get_good_data()
+        good_data = quizzes_data.get_test_answer_response_data()
         bad_data = self.make_bad_data(good_data, question_id)
         self.check_bad_data(bad_data, create_quiz)
 
@@ -117,7 +117,7 @@ class TestQuestionTypesValidator(AbstractTestAnswerResponseValidator):
         return data
 
     def test_one_choice_type(self, create_quiz):
-        data = get_good_data()
+        data = quizzes_data.get_test_answer_response_data()
         bad_data = self._make_bad_many_choices(data)
         self.check_bad_data(bad_data, create_quiz)
 

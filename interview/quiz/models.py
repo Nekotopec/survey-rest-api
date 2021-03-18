@@ -1,12 +1,9 @@
 import uuid
 
-from django.core.exceptions import ValidationError
 from django.db import models
-from django.urls import reverse
-
-from users.models import AnonymousUser
 
 from interview.settings import BASE_URL
+from users.models import AnonymousUser
 
 
 # Create your models here.
@@ -81,6 +78,6 @@ class AnswerToQuestion(models.Model):
 
 class AnswerResponse(models.Model):
     """ Answer to full quiz from the user."""
-    quiz = models.ForeignKey('Quiz', on_delete=models.DO_NOTHING)
+    quiz = models.ForeignKey('Quiz', on_delete=models.CASCADE)
     user = models.ForeignKey('users.AnonymousUser',
                              on_delete=models.DO_NOTHING)

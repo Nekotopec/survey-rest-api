@@ -1,0 +1,335 @@
+swagger: '2.0'
+info:
+  title: Quizzes api
+  description: Description
+  termsOfService: https://www.google.com/policies/terms/
+  contact:
+    email: contact@snippets.local
+  license:
+    name: BSD License
+  version: v1
+basePath: /api
+consumes:
+  - application/json
+produces:
+  - application/json
+securityDefinitions:
+  Basic:
+    type: basic
+security:
+  - Basic: []
+paths:
+  /answer_responses/:
+    get:
+      operationId: answer_responses_list
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/AnswerResponse'
+      tags:
+        - answer_responses
+    post:
+      operationId: answer_responses_create
+      description: ''
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/AnswerResponseDetail'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/AnswerResponseDetail'
+      tags:
+        - answer_responses
+    parameters: []
+  /answer_responses/{id}/:
+    get:
+      operationId: answer_responses_read
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/AnswerResponseDetail'
+      tags:
+        - answer_responses
+    put:
+      operationId: answer_responses_update
+      description: ''
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/AnswerResponseDetail'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/AnswerResponseDetail'
+      tags:
+        - answer_responses
+    patch:
+      operationId: answer_responses_partial_update
+      description: ''
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/AnswerResponseDetail'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/AnswerResponseDetail'
+      tags:
+        - answer_responses
+    delete:
+      operationId: answer_responses_delete
+      description: ''
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - answer_responses
+    parameters:
+      - name: id
+        in: path
+        description: A unique integer value identifying this answer response.
+        required: true
+        type: integer
+  /quizzes/:
+    get:
+      operationId: quizzes_list
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Quiz'
+      tags:
+        - quizzes
+    post:
+      operationId: quizzes_create
+      description: ''
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/QuizDetail'
+      responses:
+        '201':
+          description: ''
+          schema:
+            $ref: '#/definitions/QuizDetail'
+      tags:
+        - quizzes
+    parameters: []
+  /quizzes/{id}/:
+    get:
+      operationId: quizzes_read
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/QuizDetail'
+      tags:
+        - quizzes
+    put:
+      operationId: quizzes_update
+      description: ''
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/QuizDetail'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/QuizDetail'
+      tags:
+        - quizzes
+    patch:
+      operationId: quizzes_partial_update
+      description: ''
+      parameters:
+        - name: data
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/QuizDetail'
+      responses:
+        '200':
+          description: ''
+          schema:
+            $ref: '#/definitions/QuizDetail'
+      tags:
+        - quizzes
+    delete:
+      operationId: quizzes_delete
+      description: ''
+      parameters: []
+      responses:
+        '204':
+          description: ''
+      tags:
+        - quizzes
+    parameters:
+      - name: id
+        in: path
+        description: A UUID string identifying this quiz.
+        required: true
+        type: string
+        format: uuid
+definitions:
+  AnswerResponse:
+    required:
+      - user
+      - quiz
+    type: object
+    properties:
+      id:
+        title: ID
+        type: integer
+        readOnly: true
+      user:
+        title: User
+        type: integer
+      quiz:
+        title: Quiz
+        type: string
+        format: uuid
+  AnswerToQuestion:
+    required:
+      - question
+    type: object
+    properties:
+      question:
+        title: Question
+        type: integer
+      text:
+        title: Text
+        type: string
+        x-nullable: true
+      answer_options:
+        type: array
+        items:
+          type: integer
+        uniqueItems: true
+  AnswerResponseDetail:
+    required:
+      - user
+      - quiz
+      - answers_to_questions
+    type: object
+    properties:
+      user:
+        title: User
+        type: integer
+      quiz:
+        title: Quiz
+        type: string
+        format: uuid
+      answers_to_questions:
+        type: array
+        items:
+          $ref: '#/definitions/AnswerToQuestion'
+  Quiz:
+    required:
+      - name
+      - description
+    type: object
+    properties:
+      name:
+        title: Name
+        type: string
+        maxLength: 255
+        minLength: 1
+      description:
+        title: Description
+        type: string
+        minLength: 1
+      id:
+        title: Id
+        type: string
+        format: uuid
+        readOnly: true
+  AnswerOption:
+    required:
+      - text
+    type: object
+    properties:
+      id:
+        title: Id
+        type: integer
+      text:
+        title: Text
+        type: string
+        maxLength: 255
+        minLength: 1
+  Question:
+    required:
+      - text
+    type: object
+    properties:
+      pk:
+        title: Pk
+        type: integer
+      text:
+        title: Text
+        type: string
+        minLength: 1
+      question_type:
+        title: Question type
+        type: string
+        enum:
+          - text
+          - choose_one
+          - choose_many
+      answer_options:
+        type: array
+        items:
+          $ref: '#/definitions/AnswerOption'
+  QuizDetail:
+    required:
+      - name
+      - description
+      - questions
+    type: object
+    properties:
+      id:
+        title: Id
+        type: string
+        readOnly: true
+      name:
+        title: Name
+        type: string
+        maxLength: 255
+        minLength: 1
+      description:
+        title: Description
+        type: string
+        minLength: 1
+      questions:
+        type: array
+        items:
+          $ref: '#/definitions/Question'

@@ -1,7 +1,9 @@
 from functools import wraps
-from django.http import HttpRequest, HttpResponse
-from users.services.db import get_anonymous_user_by_session, add_anonymous_user
+
 from django.contrib.sessions.models import Session
+from django.http import HttpRequest
+
+from users.services.db import get_anonymous_user_by_session, add_anonymous_user
 
 
 def check_for_user_cookie(func):
@@ -25,6 +27,16 @@ def check_for_user_cookie(func):
             user = add_anonymous_user(session=session)
 
         return func(self, request, *args, user=user, **kwargs)
+
+    return wrapper
+
+
+def is_owner(func):
+    """Check if the user is the owner of the instance."""
+
+    @wraps(func)
+    def wrapper():
+        return func()
 
     return wrapper
 

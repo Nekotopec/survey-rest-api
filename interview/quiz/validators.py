@@ -1,7 +1,9 @@
 from abc import abstractmethod, ABC
-from rest_framework.exceptions import ValidationError
-from quiz import models
 from typing import List
+
+from rest_framework.exceptions import ValidationError
+
+from quiz import models
 
 
 # Chain of responsibilities validators

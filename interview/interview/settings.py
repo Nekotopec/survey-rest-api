@@ -140,3 +140,7 @@ REST_FRAMEWORK = {
 }
 
 BASE_URL = 'localhost:8080'
+
+SWAGGER_SETTINGS = {
+   'DEFAULT_INFO': 'quiz.urls.api_info',
+}

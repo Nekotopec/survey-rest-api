@@ -3,6 +3,8 @@
 interview/.idea/
 .idea/
 
+# Log files.
+/logs
 
 # Dev files
 interview/DB relations.png

@@ -1,5 +1,6 @@
 from django import forms
 from django.forms import models
+
 from .models import Quiz, Question
 from .services.db import get_questions_of_quiz, get_answer_options_of_question
 
@@ -101,7 +102,6 @@ class QuestionForm(forms.forms.Form):
             widget_attrs['style'] = "width:100%;"
 
         kwargs['label'] = self.question.text
-
 
         kwargs['widget'] = self.get_widget(**widget_attrs)
         field = self._get_field(**kwargs)
